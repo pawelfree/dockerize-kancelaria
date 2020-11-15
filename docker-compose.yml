@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  pgadmin:
+    container_name: pgadmin
+    build: 
+      context: .
+      dockerfile: Dockerfile.pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+      - PGADMIN_LISTEN_PORT=81
+    ports:
+      - 8181:81
+  db:
+    container_name: kancelaria_db
+    build:
+      context: .
+      dockerfile: Dockerfile.psql
+  glassfish:
+    container_name: kancelaria_glassfish
+    build:
+      context: .
+      dockerfile: Dockerfile.glassfish
+    ports:
+      - 8080:8080
+      - 4848:4848
+    depends_on:
+      - db

@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Server z image postgres",
+            "Group": "Servers",
+            "Port": 5432,
+            "Username": "kancelaria",
+            "Host": "db",
+            "SSLMode": "prefer",
+            "MaintenanceDB": "kancelaria"
+        }
+    }
+}
