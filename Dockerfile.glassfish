@@ -3,7 +3,12 @@ FROM        openjdk:8u275-jdk
 ENV         GLASSFISH_HOME    /usr/local/glassfish4
 ENV         PATH              $PATH:$JAVA_HOME/bin:$GLASSFISH_HOME/bin
 
-RUN         apt-get update
+RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+
+# Add PostgreSQL's repository. It contains the most recent stable release of PostgreSQL.
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+
+RUN apt-get update && apt-get install -y software-properties-common postgresql-client-9.6
 
 RUN         curl -L -o /tmp/glassfish-4.1.zip http://download.java.net/glassfish/4.1/release/glassfish-4.1.zip && \
             unzip /tmp/glassfish-4.1.zip -d /usr/local && \
@@ -83,5 +88,9 @@ RUN         rm -rf /tmp/kancelaria-jee &&\
 
 RUN         apt-get remove -y maven && apt-get autoremove -y
 
+COPY wait-for-postgres.sh wait-for-postgres.sh
+
+RUN chmod +x wait-for-postgres.sh
+
 # verbose causes the process to remain in the foreground so that docker can track it
-CMD         asadmin start-domain  --verbose
+CMD asadmin start-domain  --verbose

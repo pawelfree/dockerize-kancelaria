@@ -16,13 +16,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.psql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
   glassfish:
     container_name: kancelaria_glassfish
     build:
       context: .
       dockerfile: Dockerfile.glassfish
+    environment:
+      - POSTGRES_PASSWORD=kancelaria
     ports:
       - 8080:8080
       - 4848:4848
     depends_on:
       - db
+    command: ["./wait-for-postgres.sh", "db", "asadmin", "start-domain",  "--verbose"]
